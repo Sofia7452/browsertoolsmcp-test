@@ -11,6 +11,12 @@ const server = new McpServer({
   version: "1.2.0",
 });
 
+// Debug logging function that uses stderr to avoid stdout redirection
+function debugLog(...args: any[]) {
+  const timestamp = new Date().toISOString();
+  console.error(`[DEBUG ${timestamp}]`, ...args);
+}
+
 // Track the discovered server connection
 let discoveredHost = "127.0.0.1";
 let discoveredPort = 3025;
@@ -107,7 +113,6 @@ async function discoverServer(): Promise<boolean> {
       }
     }
   }
-
   console.error("No server found during discovery");
   return false;
 }
@@ -116,6 +121,7 @@ async function discoverServer(): Promise<boolean> {
 async function withServerConnection<T>(
   apiCall: () => Promise<T>
 ): Promise<T | any> {
+  debugLog('withServerConnection called');
   // Attempt to discover server if not already discovered
   if (!serverDiscovered) {
     const discovered = await discoverServer();
@@ -252,8 +258,10 @@ server.tool(
   "takeScreenshot",
   "Take a screenshot of the current browser tab",
   async () => {
+    debugger
     return await withServerConnection(async () => {
       try {
+        debugger
         const response = await fetch(
           `http://${discoveredHost}:${discoveredPort}/capture-screenshot`,
           {
@@ -303,10 +311,16 @@ server.tool(
   "Get the selected element from the browser",
   async () => {
     return await withServerConnection(async () => {
+      debugger
+      debugLog('getSelectedElement-discoveredHost', discoveredHost);
+      debugLog('getSelectedElement called at:', new Date().toISOString());
+
       const response = await fetch(
         `http://${discoveredHost}:${discoveredPort}/selected-element`
       );
       const json = await response.json();
+      debugLog('getSelectedElement response:', json);
+
       return {
         content: [
           {
@@ -1429,6 +1443,7 @@ server.tool(
   try {
     // Attempt initial server discovery
     console.error("Attempting initial server discovery on startup...");
+    debugger
     await discoverServer();
     if (serverDiscovered) {
       console.error(

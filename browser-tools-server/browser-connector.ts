@@ -499,6 +499,7 @@ app.get("/all-xhr", (req, res) => {
 
 // Add new endpoint for selected element
 app.post("/selected-element", (req, res) => {
+  console.log('server-selected-element_req.body', req.body);
   const { data } = req.body;
   selectedElement = data;
   res.json({ status: "ok" });
@@ -617,6 +618,7 @@ export class BrowserConnector {
     });
 
     // Register the capture-screenshot endpoint
+    debugger
     this.app.post(
       "/capture-screenshot",
       async (req: express.Request, res: express.Response) => {
@@ -628,6 +630,7 @@ export class BrowserConnector {
           "Browser Connector: Active WebSocket connection:",
           !!this.activeConnection
         );
+        debugger
         await this.captureScreenshot(req, res);
       }
     );
@@ -758,6 +761,7 @@ export class BrowserConnector {
     });
 
     // Add screenshot endpoint
+    debugger
     this.app.post(
       "/screenshot",
       (req: express.Request, res: express.Response): void => {
@@ -766,8 +770,10 @@ export class BrowserConnector {
         );
         console.log("Browser Connector: Request body:", req.body);
         try {
+          debugger
           console.log("Received screenshot capture request");
           const { data, path: outputPath } = req.body;
+          console.log('9898');
 
           if (!data) {
             console.log("Screenshot request missing data");
@@ -1035,8 +1041,7 @@ export class BrowserConnector {
           err
         );
         throw new Error(
-          `Failed to create screenshot directory: ${
-            err instanceof Error ? err.message : String(err)
+          `Failed to create screenshot directory: ${err instanceof Error ? err.message : String(err)
           }`
         );
       }
@@ -1059,8 +1064,7 @@ export class BrowserConnector {
           err
         );
         throw new Error(
-          `Failed to save screenshot: ${
-            err instanceof Error ? err.message : String(err)
+          `Failed to save screenshot: ${err instanceof Error ? err.message : String(err)
           }`
         );
       }
@@ -1472,7 +1476,7 @@ export class BrowserConnector {
 
     // Initialize the browser connector with the existing app AND server
     const browserConnector = new BrowserConnector(app, server);
-
+    debugger;
     // Handle shutdown gracefully with improved error handling
     process.on("SIGINT", async () => {
       console.log("\nReceived SIGINT signal. Starting graceful shutdown...");

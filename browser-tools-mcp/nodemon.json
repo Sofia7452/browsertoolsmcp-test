@@ -1,0 +1,15 @@
+{
+  "watch": [
+    "mcp-server.ts",
+    "*.ts"
+  ],
+  "ext": "ts",
+  "ignore": [
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "exec": "tsc && node dist/mcp-server.js",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

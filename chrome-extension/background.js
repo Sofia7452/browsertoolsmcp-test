@@ -240,8 +240,7 @@ async function updateServerWithUrl(tabId, url, source = "background_update") {
         // Send the URL to the server
         const serverUrl = `http://${settings.serverHost}:${settings.serverPort}/current-url`;
         console.log(
-          `Attempt ${
-            retryCount + 1
+          `Attempt ${retryCount + 1
           }/${maxRetries} to update server with URL: ${url}`
         );
 

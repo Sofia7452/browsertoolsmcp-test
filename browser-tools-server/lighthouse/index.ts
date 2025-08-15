@@ -5,7 +5,7 @@ import {
   scheduleBrowserCleanup,
 } from "../puppeteer-service.js";
 import { LighthouseConfig, AuditCategory } from "./types.js";
-
+import debugLog from "../utils/customLog.js";
 /**
  * Creates a Lighthouse configuration object
  * @param categories Array of categories to audit
@@ -69,11 +69,12 @@ export async function runLighthouseAudit(
     // For performance audits, we want to load all resources
     // For accessibility or other audits, we can block non-essential resources
     try {
+      debugLog('INFO', 'runLighthouseAudit-Connecting to headless browser');
       const { port } = await connectToHeadlessBrowser(url, {
         blockResources: !isPerformanceAudit,
       });
 
-      console.log(`Connected to browser on port: ${port}`);
+      debugLog('INFO', `Connected to browser on port: ${port}`);
 
       // Create Lighthouse config
       const { flags, config } = createLighthouseConfig(categories);
@@ -120,8 +121,7 @@ export async function runLighthouseAudit(
     // Schedule browser cleanup even if the audit fails
     scheduleBrowserCleanup();
     throw new Error(
-      `Lighthouse audit failed: ${
-        error instanceof Error ? error.message : String(error)
+      `Lighthouse audit failed: ${error instanceof Error ? error.message : String(error)
       }`
     );
   }

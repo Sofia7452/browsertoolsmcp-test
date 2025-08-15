@@ -1,6 +1,7 @@
 import { Result as LighthouseResult } from "lighthouse";
 import { AuditCategory, LighthouseReport } from "./types.js";
 import { runLighthouseAudit } from "./index.js";
+import debugLog from "../utils/customLog.js";
 
 // === SEO Report Types ===
 
@@ -83,12 +84,12 @@ const DETAIL_LIMITS = {
  */
 export async function runSEOAudit(url: string): Promise<AIOptimizedSEOReport> {
   try {
+    debugLog('INFO', 'runSEOAudit', url);
     const lhr = await runLighthouseAudit(url, [AuditCategory.SEO]);
     return extractAIOptimizedData(lhr, url);
   } catch (error) {
     throw new Error(
-      `SEO audit failed: ${
-        error instanceof Error ? error.message : String(error)
+      `SEO audit failed: ${error instanceof Error ? error.message : String(error)
       }`
     );
   }
@@ -101,6 +102,7 @@ const extractAIOptimizedData = (
   lhr: LighthouseResult,
   url: string
 ): AIOptimizedSEOReport => {
+  debugLog('INFO', 'extractAIOptimizedData', url);
   const categoryData = lhr.categories[AuditCategory.SEO];
   const audits = lhr.audits || {};
 

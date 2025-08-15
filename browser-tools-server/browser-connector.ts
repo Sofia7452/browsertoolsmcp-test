@@ -20,7 +20,7 @@ import {
 } from "./lighthouse/index.js";
 import * as net from "net";
 import { runBestPracticesAudit } from "./lighthouse/best-practices.js";
-
+import debugLog from "./utils/customLog.js";
 /**
  * Converts a file path to the appropriate format for the current platform
  * Handles Windows, WSL, macOS and Linux path formats
@@ -342,6 +342,7 @@ function truncateLogsToQueryLimit(logs: any[]): any[] {
 
 // Endpoint for the extension to POST data
 app.post("/extension-log", (req, res) => {
+  debugLog('INFO', 'Received extension log request:', req.body);
   console.log("\n=== Received Extension Log ===");
   console.log("Request body:", {
     dataType: req.body.data?.type,
@@ -445,7 +446,7 @@ app.post("/extension-log", (req, res) => {
       }
       break;
     case "selected-element":
-      console.log("Updating selected element:", {
+      debugLog('INFO', 'Updating selected element:', {
         tagName: data.element?.tagName,
         id: data.element?.id,
         className: data.element?.className,
@@ -499,13 +500,14 @@ app.get("/all-xhr", (req, res) => {
 
 // Add new endpoint for selected element
 app.post("/selected-element", (req, res) => {
-  console.log('server-selected-element_req.body', req.body);
+  debugLog('INFO', 'server-post-selected-element_req.body', req.body);
   const { data } = req.body;
   selectedElement = data;
   res.json({ status: "ok" });
 });
 
 app.get("/selected-element", (req, res) => {
+  debugLog('INFO', 'server-get-selected-element', req.body);
   res.json(selectedElement || { message: "No element selected" });
 });
 

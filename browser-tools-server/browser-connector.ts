@@ -21,6 +21,7 @@ import {
 import * as net from "net";
 import { runBestPracticesAudit } from "./lighthouse/best-practices.js";
 import debugLog from "./utils/customLog.js";
+import { debuglog } from "util";
 /**
  * Converts a file path to the appropriate format for the current platform
  * Handles Windows, WSL, macOS and Linux path formats
@@ -901,7 +902,7 @@ export class BrowserConnector {
   // Updated method to get URL for audits with improved connection tracking and waiting
   private async getUrlForAudit(): Promise<string | null> {
     try {
-      console.log("getUrlForAudit called");
+      debugLog("INFO", "getUrlForAudit called");
 
       // Use the stored URL if available immediately
       if (currentUrl && currentUrl !== "" && currentUrl !== "about:blank") {
@@ -919,6 +920,8 @@ export class BrowserConnector {
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
         // Check if URL is available now
         if (currentUrl && currentUrl !== "" && currentUrl !== "about:blank") {
+          debugLog("INFO", `server-currentUrl: ${currentUrl}`);
+          // Log the successful URL retrieval
           console.log(`URL became available after waiting: ${currentUrl}`);
           return currentUrl;
         }
@@ -1320,6 +1323,7 @@ export class BrowserConnector {
 
   // Set up SEO audit endpoint
   private setupSEOAudit() {
+    debugLog("INFO", "server-setupSEOAudit");
     this.setupAuditEndpoint(AuditCategory.SEO, "/seo-audit", runSEOAudit);
   }
 
@@ -1353,11 +1357,12 @@ export class BrowserConnector {
 
     this.app.post(endpoint, async (req: any, res: any) => {
       try {
+        debugLog("INFO", `server-post-${auditType}-${endpoint}`, req.body);
         console.log(`${auditType} audit request received`);
 
         // Get URL using our helper method
         const url = await this.getUrlForAudit();
-
+        debugLog("INFO", `server-getUrlForAudit:${url}`);
         if (!url) {
           console.log(`No URL available for ${auditType} audit`);
           return res.status(400).json({
@@ -1377,13 +1382,10 @@ export class BrowserConnector {
             error: `Cannot run ${auditType} audit on about:blank`,
           });
         }
-
-        console.log(`Preparing to run ${auditType} audit for: ${url}`);
-
         // Run the audit using the provided function
         try {
           const result = await auditFunction(url);
-
+          debugLog('INFO', `server-auditFunction-result:`, result);
           console.log(`${auditType} audit completed successfully`);
           // Return the results
           res.json(result);

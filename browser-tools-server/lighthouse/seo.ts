@@ -357,6 +357,7 @@ const extractAIOptimizedData = (
         : undefined,
   };
 
+  debugLog('INFO', 'extractAIOptimizedData-metadata,reportContent', { metadata, reportContent });
   // Return the full report following the LighthouseReport interface
   return {
     metadata,

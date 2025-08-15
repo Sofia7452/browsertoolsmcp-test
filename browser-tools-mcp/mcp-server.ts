@@ -560,7 +560,7 @@ server.tool(
         console.log(
           `Sending POST request to http://${discoveredHost}:${discoveredPort}/seo-audit`
         );
-        debugger
+        debugLog('INFO', 'mcp-runSEOAudit-discoveredHost', discoveredHost);
         const response = await fetch(
           `http://${discoveredHost}:${discoveredPort}/seo-audit`,
           {
@@ -576,7 +576,7 @@ server.tool(
             }),
           }
         );
-
+        debugLog('INFO', 'mcp-runSEOAudit-response:', response);
         // Log the response status
         console.log(`SEO audit response status: ${response.status}`);
 

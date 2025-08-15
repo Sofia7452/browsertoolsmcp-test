@@ -4,6 +4,7 @@ import path from "path";
 import os from "os";
 import { execSync } from "child_process";
 import * as ChromeLauncher from "chrome-launcher";
+import debugLog from "./utils/customLog.js";
 // ===== Configuration Types and Defaults =====
 
 /**
@@ -140,7 +141,7 @@ async function launchNewBrowser(): Promise<puppeteer.Browser> {
         executablePath: launchOptions.executablePath,
       })
     );
-
+    debugLog("INFO", 'puppeteer.launch')
     browser = await puppeteer.launch(launchOptions);
 
     // Store references to the browser instance
@@ -333,11 +334,11 @@ async function findBrowserExecutablePath(): Promise<string> {
         ...(process.platform === "darwin"
           ? ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
           : process.platform === "win32"
-          ? [
+            ? [
               `${process.env.PROGRAMFILES}\\Google\\Chrome\\Application\\chrome.exe`,
               `${process.env["PROGRAMFILES(X86)"]}\\Google\\Chrome\\Application\\chrome.exe`,
             ]
-          : ["/usr/bin/google-chrome"]),
+            : ["/usr/bin/google-chrome"]),
       ].filter(Boolean);
 
       // Use the first valid path
@@ -704,8 +705,7 @@ export async function connectToHeadlessBrowser(
   page: puppeteer.Page;
 }> {
   console.log(
-    `Connecting to headless browser for ${url}${
-      options.blockResources ? " (blocking non-essential resources)" : ""
+    `Connecting to headless browser for ${url}${options.blockResources ? " (blocking non-essential resources)" : ""
     }`
   );
 
@@ -728,6 +728,7 @@ export async function connectToHeadlessBrowser(
     const port = parseInt(
       launchedBrowserWSEndpoint.split(":")[2].split("/")[0]
     );
+    debugLog("INFO", 'connectToHeadlessBrowser-port:', port)
 
     // Always create a new page for each audit to avoid request interception conflicts
     console.log("Creating a new page for this audit");
@@ -738,6 +739,7 @@ export async function connectToHeadlessBrowser(
     page.setDefaultNavigationTimeout(navigationTimeout);
 
     // Navigate to the URL
+    debugLog("INFO", 'connectToHeadlessBrowser-page.goto:', url)
     console.log(`Navigating to ${url}`);
     await page.goto(url, {
       waitUntil: "networkidle2", // Wait until there are no more network connections for at least 500ms
@@ -917,8 +919,7 @@ export async function connectToHeadlessBrowser(
   } catch (error) {
     console.error("Failed to connect to headless browser:", error);
     throw new Error(
-      `Failed to connect to headless browser: ${
-        error instanceof Error ? error.message : String(error)
+      `Failed to connect to headless browser: ${error instanceof Error ? error.message : String(error)
       }`
     );
   }

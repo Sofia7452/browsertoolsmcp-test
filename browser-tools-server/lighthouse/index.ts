@@ -50,6 +50,7 @@ export async function runLighthouseAudit(
   url: string,
   categories: string[]
 ): Promise<LighthouseResult> {
+  debugLog('INFO', `runLighthouseAudit-url: ${url}`);
   console.log(`Starting Lighthouse ${categories.join(", ")} audit for: ${url}`);
 
   if (!url || url === "about:blank") {
@@ -74,7 +75,7 @@ export async function runLighthouseAudit(
         blockResources: !isPerformanceAudit,
       });
 
-      debugLog('INFO', `Connected to browser on port: ${port}`);
+      debugLog('INFO', `runLighthouseAudit-port: ${port}`);
 
       // Create Lighthouse config
       const { flags, config } = createLighthouseConfig(categories);
@@ -84,6 +85,7 @@ export async function runLighthouseAudit(
         `Running Lighthouse with categories: ${categories.join(", ")}`
       );
       const runnerResult = await lighthouse(url, flags as Flags, config);
+      debugLog('INFO', `runLighthouseAudit-runnerResult:`, runnerResult);
       console.log("Lighthouse scan completed");
 
       if (!runnerResult?.lhr) {
@@ -96,7 +98,7 @@ export async function runLighthouseAudit(
 
       // Return the result
       const result = runnerResult.lhr;
-
+      debugLog('INFO', `runLighthouseAudit result:`, result);
       return result;
     } catch (browserError) {
       // Check if the error is related to Chrome/Edge not being available

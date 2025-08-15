@@ -798,7 +798,7 @@ async function setupWebSocket() {
 
   // Reset reconnect flag since validation succeeded
   reconnectAfterValidation = false;
-
+  console.log('---Chrome extension-settings---', settings)
   const wsUrl = `ws://${settings.serverHost}:${settings.serverPort}/extension-ws`;
   console.log(`Connecting to WebSocket at ${wsUrl}`);
 

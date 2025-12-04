@@ -1,5 +1,4 @@
-# 自己debug browsertoolsmcp的源码。
-本人具体讲解视频请到GDG视频号。
+# 自己debug browsertoolsmcp的源码，本人具体讲解视频请到GDG视频号查看
 
 # BrowserTools MCP
 
